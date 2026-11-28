@@ -1,7 +1,25 @@
-export const ytId = (u: string) => {
-  u = (u || '').trim()
-  const m = u.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/)
-  return m ? m[1] : /^[\w-]{11}$/.test(u) ? u : ''
+export const ytId = (input: string) => {
+  const value = (input || '').trim()
+  if (/^[A-Za-z0-9_-]{11}$/.test(value)) return value
+
+  try {
+    const url = new URL(value.includes('://') ? value : `https://${value}`)
+    const host = url.hostname.toLowerCase().replace(/^www\./, '').replace(/^m\./, '')
+    if (host === 'youtu.be') {
+      const id = url.pathname.split('/').filter(Boolean)[0] || ''
+      return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : ''
+    }
+    if (host === 'youtube.com' || host === 'youtube-nocookie.com') {
+      const parts = url.pathname.split('/').filter(Boolean)
+      const id = url.pathname === '/watch'
+        ? url.searchParams.get('v') || ''
+        : ['embed', 'shorts', 'live', 'v'].includes(parts[0] || '') ? parts[1] || '' : ''
+      return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : ''
+    }
+  } catch {
+    return ''
+  }
+  return ''
 }
 export const money = (n: number, cur = 'BOB') =>
   n > 0 ? `${cur === 'BOB' ? 'Bs' : cur} ${Number(n).toLocaleString('es-BO', { maximumFractionDigits: 2 })}` : 'Gratis'

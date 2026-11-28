@@ -130,8 +130,16 @@ export default function Classroom() {
           {!lesson ? <div className="card">Este curso aún no tiene lecciones publicadas.</div> : <>
             {lesson.youtube_id ? (
               <>
-                <iframe className="vid" title="Video de la lección" src={`https://www.youtube-nocookie.com/embed/${lesson.youtube_id}?rel=0&playsinline=1`}
-                  referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
+                <iframe
+                  key={lesson.id}
+                  className="vid"
+                  title={`Video: ${lesson.title}`}
+                  src={`https://www.youtube.com/embed/${lesson.youtube_id}?rel=0&playsinline=1&modestbranding=1`}
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                  allowFullScreen
+                />
                 <div className="mu" style={{ marginTop: 6 }}>¿No carga el video? <a style={{ textDecoration: 'underline' }} target="_blank" rel="noopener noreferrer" href={`https://youtu.be/${lesson.youtube_id}`}>Ábrelo en YouTube</a></div>
               </>
             ) : <div className="vid empty">Esta lección no tiene video; revisa el contenido y los materiales.</div>}

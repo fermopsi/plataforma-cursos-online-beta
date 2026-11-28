@@ -89,3 +89,9 @@ Admin: `/admin` (resumen), `cursos`, `cursos/:id` (editor), `estudiantes`, `estu
 ## Fuera de alcance de esta versión (por diseño del documento)
 Pasarelas de pago, suscripciones, cupones, quizzes, reseñas (las tablas futuras no se crearon; el esquema está preparado para añadirlas).
 Pendientes menores: envío de avisos administrativos masivos, reordenar con arrastrar-y-soltar (hoy flechas ↑↓), exportación Excel (hoy CSV).
+
+### Reparar videos de demostración de YouTube
+
+Si ya ejecutaste una versión anterior de `demo_data.sql`, ejecuta `supabase/fix_demo_youtube.sql` en Supabase → SQL Editor. El script actualiza los IDs de video de las lecciones de los seis cursos de demostración sin crear cursos ni lecciones duplicados.
+
+Los IDs usados son videos públicos de referencia (YouTube Developers Live y Big Buck Bunny); son contenido de demostración, no clases propias de Aula Norte. Para cargar clases reales, pega el enlace de YouTube en el editor de cada lección. Se aceptan enlaces `watch`, `youtu.be`, `embed`, `shorts` y `live`.

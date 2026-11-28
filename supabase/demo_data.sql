@@ -35,8 +35,31 @@ begin
       insert into public.modules (course_id, title, position) values (v_course, mod_titles[i], i) returning id into v_mod;
       for j in 1..3 loop
         insert into public.lessons (module_id, course_id, title, description, youtube_id, duration_min, position)
-        values (v_mod, v_course, les_titles[(i - 1) * 3 + j], 'Mira el video y revisa el material de apoyo.', 'ysz5S6PUM-U', 6 + (j - 1) * 3, j);
+        values (v_mod, v_course, les_titles[(i - 1) * 3 + j], 'Mira el video y revisa el material de apoyo.', case when ((i - 1) * 3 + j) % 2 = 1 then 'M7lc1UVf-VE' else 'YE7VzlLtp-4' end, 6 + (j - 1) * 3, j);
       end loop;
     end loop;
   end loop;
 end $$;
+
+
+-- Actualiza también las lecciones de cursos demo ya existentes.
+-- Esto corrige instalaciones que ejecutaron una versión anterior del seed.
+with demo_lessons as (
+  select l.id,
+         row_number() over (partition by c.id order by m.position, l.position) as lesson_no
+  from public.lessons l
+  join public.modules m on m.id = l.module_id
+  join public.courses c on c.id = l.course_id
+  where c.slug in (
+    'marketing-digital-estrategico',
+    'excel-gestion-de-negocios',
+    'liderazgo-equipos-remotos',
+    'fotografia-producto-celular',
+    'finanzas-emprendedor',
+    'presentaciones-persuasivas'
+  )
+)
+update public.lessons l
+set youtube_id = case when d.lesson_no % 2 = 1 then 'M7lc1UVf-VE' else 'YE7VzlLtp-4' end
+from demo_lessons d
+where l.id = d.id;
